@@ -65,14 +65,14 @@ class ClienteControleler extends Controller
         // dd($nombre);
 
 
-        // try {
-        //     $clienteGet =  Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/BusinessPartners('".$code."')")->json();
-        //     // dd($clienteGet);
-        //     Alert::error('Error', 'Cliente ya existe');
-        //     return redirect()->route('create');
-        // } catch (\Throwable $th) {
+        try {
+            $clienteGet =  Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/BusinessPartners('".$code."')")->json();
+            // dd($clienteGet);
+            Alert::error('Error', 'Cliente ya existe');
+            return redirect()->route('create');
+        } catch (\Throwable $th) {
             $decto = intval($datos['Descuento']);
-            // try {
+            try {
                 if (isset($datos['Documento_idetidad'])) {
                     $archivos = $datos['Documento_idetidad'];
                     $id_doc = '';
@@ -80,11 +80,9 @@ class ClienteControleler extends Controller
                         $arch = $value;
                         $nombreDocumento =  time()."-".$code."-".$arch->getClientOriginalName(); 
                         $gl = Storage::disk('public')->put("docs", $nombreDocumento);
-                        // dd($g);
                         // $arch->storage(public_path().'/docs', $nombreArch);  
                         $url=url('').'storage/docs';
                         $g = move_uploaded_file($arch, "//10.170.20.124/SAP-compartida/Carpeta_anexos/$nombreDocumento");
-                        // dd($g);
                         if ($id_doc == '') {
                             $doc = Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])
                             ->post('https://10.170.20.95:50000/b1s/v1/Attachments2', [
@@ -303,12 +301,12 @@ class ClienteControleler extends Controller
                 
                 Alert::success('Creado', 'Cliente creado exitosamente.');
                 return redirect('/');
-            // } catch (\Throwable $th) {
-            //     log($th->getMessage());
-            //     Alert::error('¡Sección Expirada!', 'Iniciar sección nuevamente.');
-            //     return redirect('/');
-            // }
-        // }
+            } catch (\Throwable $th) {
+                log($th->getMessage());
+                Alert::error('¡Sección Expirada!', 'Iniciar sección nuevamente.');
+                return redirect('/');
+            }
+        }
 
 
     }

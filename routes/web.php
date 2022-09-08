@@ -29,7 +29,7 @@ Route::get('/', function () {
     // dd($_SESSION['B1SESSION']);  
     
 
-    // $datos = Http::get('https://mandaryservir.co/mys/users/remesasivanagro/2022-08-30')->json();
+    // $datos = Http::get('https://mandaryservir.co/mys/users/remesasivanagro/2022-08-01')->json();
     // $datos = $datos['Guia'];
     //     dd($datos);
         

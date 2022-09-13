@@ -92,8 +92,13 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label for="correo_fac" class="form-label"><strong> Correo Facturación <b style="color: red;">*</b> </strong></label>
-                        <input type="email" class="form-control form-control-lg @error('Facturacion') is-invalid @enderror" id="correo_fac" name="Facturacion" value="{{old('Facturacion')}}" placeholder="Ejm. factura@example.com">
+                        <input type="email" class="form-control form-control-lg @error('Facturacion') is-invalid @enderror" id="correo_fac" name="Facturacion" value="{{old('Facturacion')}}" {{-- onchange="Valid_email()" --}} placeholder="Ejm. factura@example.com">
                     </div>
+                    
+                    {{-- <div id="mensaje1">
+                        
+                    </div> --}}
+
                     @error('Facturacion')
                     <div class="alert alert-danger mt-1 mb-1"><small>{{ $message }}</small></div>
                     @enderror
@@ -101,8 +106,13 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label for="correo_noti" class="form-label"><strong> Correo Notificaciones <b style="color: red;">*</b> </strong></label>
-                        <input type="email" class="form-control form-control-lg @error('Notificaciones') is-invalid @enderror" id="correo_noti" name="Notificaciones" value="{{old('Notificaciones')}}" placeholder="Ejm. Notificacion@example.com">
+                        <input type="email" class="form-control form-control-lg @error('Notificaciones') is-invalid @enderror" id="correo_noti" name="Notificaciones" value="{{old('Notificaciones')}}" {{-- onchange="Valid_email2()" --}} placeholder="Ejm. Notificacion@example.com">
                     </div>
+                    
+                    {{-- <div id="mensaje2">
+                        
+                    </div> --}}
+
                     @error('Notificaciones')
                     <div class="alert alert-danger mt-1 mb-1"><small>{{ $message }}</small></div>
                     @enderror
@@ -340,6 +350,7 @@
             <option value="${tipo['Code']}">${tipo['Name']}</option>
         `);
     }
+
     let dep = '';
     for (let depart of departamentos) {
         if (dep !== depart['U_NomDepartamento']) {
@@ -502,6 +513,116 @@
         let x = $('#barrio2').val();
         $('#barrio2').val(x.toUpperCase());
     }
+
+    // function Valid_email() {
+    //     let correo = $('#correo_fac').val();
+    //     console.log(correo);
+
+    //     var myHeaders = new Headers();
+    //     myHeaders.append("apikey", "l8Cq3sBkmZUgExqcXA7SzxS23h6eOJ24");
+
+    //     var requestOptions = {
+    //     method: 'GET',
+    //     redirect: 'follow',
+    //     headers: myHeaders
+    //     };
+
+    //     fetch("https://api.apilayer.com/email_verification/check?email="+correo, requestOptions)
+    //     .then(response => response.text())
+    //     .then(result => 
+    //         {
+    //             let resp = JSON.parse(result)
+    //             console.log(resp);
+    //             if (resp['smtp_check']) {
+    //                 console.log('si');
+    //                 $("#correo_fac").removeClass('is-invalid');
+    //                 $("#correo_fac").addClass('is-valid');
+    //                 $("#mensaje1").text('');
+    //             }else{
+    //                 console.log('no');
+    //                 $("#mensaje1").text('');
+    //                 $("#correo_fac").removeClass('is-valid');
+    //                 $("#correo_fac").addClass('is-invalid');
+    //                 $("#mensaje1").append(`
+                    
+    //                 <div class="alert alert-danger" role="alert">
+    //                     Correo no valido
+    //                 </div>`)
+    //             }
+    //         }
+    //     )
+    //     .catch(error => console.log('error', error));
+        
+    //     var myHeaders = new Headers();
+    //         myHeaders.append("Cookie", "emaillistverify_res=6n9g3hjpj9rik75j5jgcs4ui11");
+
+    //         var requestOptions = {
+    //         method: 'GET',
+    //         headers: myHeaders,
+    //         redirect: 'follow'
+    //         };
+
+    //         fetch("https://app.verificaremails.com/api/verifyEmail?secret=VuKx3XigoPHddVrVFhFKb&email="+correo, requestOptions)
+    //         .then(response => response.text())
+    //         .then(result => {
+    //             if (result == 'ok') {
+    //                 console.log('si');
+    //                 $("#correo_fac").removeClass('is-invalid');
+    //                 $("#correo_fac").addClass('is-valid');
+    //                 $("#mensaje1").text('');
+    //             }else{
+    //                 console.log('no');
+    //                 $("#mensaje1").text('');
+    //                 $("#correo_fac").removeClass('is-valid');
+    //                 $("#correo_fac").addClass('is-invalid');
+    //                 $("#mensaje1").append(`
+                    
+    //                 <div class="alert alert-danger" role="alert">
+    //                     Correo no valido
+    //                 </div>`)
+    //             }
+    //         })
+    //         .catch(error => console.log('error', error));
+
+    // }
+    
+    // function Valid_email2() {
+    //     let correo = $('#correo_noti').val();
+    //     console.log(correo);
+        
+        
+    //     var myHeaders = new Headers();
+    //         myHeaders.append("Cookie", "emaillistverify_res=6n9g3hjpj9rik75j5jgcs4ui11");
+
+    //         var requestOptions = {
+    //         method: 'GET',
+    //         headers: myHeaders,
+    //         redirect: 'follow'
+    //         };
+
+    //         fetch("https://app.verificaremails.com/api/verifyEmail?secret=VuKx3XigoPHddVrVFhFKb&email="+correo, requestOptions)
+    //         .then(response => response.text())
+    //         .then(result => {
+    //             if (result == 'ok') {
+    //                 console.log('si');
+    //                 $("#correo_noti").removeClass('is-invalid');
+    //                 $("#correo_noti").addClass('is-valid');
+    //                 $("#mensaje2").text('');
+    //             }else{
+    //                 console.log('no');
+    //                 $("#mensaje2").text('');
+    //                 $("#correo_noti").removeClass('is-valid');
+    //                 $("#correo_noti").addClass('is-invalid');
+    //                 $("#mensaje2").append(`
+                    
+    //                 <div class="alert alert-danger" role="alert">
+    //                     Correo no valido
+    //                 </div>`)
+    //             }
+    //         })
+    //         .catch(error => console.log('error', error));
+
+    // }
 </script>
 
 @endsection

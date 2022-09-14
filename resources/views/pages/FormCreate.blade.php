@@ -5,7 +5,7 @@
 @section('content')
 <div class="row justify-content-center mt-5">
     <div class=" col-12 col-lg-10 contenedor rounded p-4">
-        <form action="{{route('store')}}" method="post" enctype="multipart/form-data">
+        <form action="{{route('store')}}" method="post" enctype="multipart/form-data" id="FormCreate">
             @csrf
             <div class="row">
                 <div class="col-12">
@@ -162,7 +162,9 @@
                 <hr>
                 <input type="hidden" name="Tipo_direccion[]" value="bo_ShipTo">
                 <input type="hidden" name="Nombre_direccion[]" value="ENVIO">
+                <div class="col-12" id="alert_cirecciones">
 
+                </div>
                 <div class="col-lg-6">
                     <label for="depar" class="form-label"> <strong> Departamento </strong><b style="color: red;">*</b></label>
                     <select class="form-select form-select-lg select2 @error('Departamento') is-invalid @enderror" id="depar" name="Departamento[]" data-placeholder="Seleccionar" onchange="Mupio()" required>
@@ -234,7 +236,7 @@
 
             <div class="row d-flex justify-content-end mb-5">
                 <div class="col-12 col-md-4 pb-3 pb-md-0 d-grid gap-2">
-                    <button type="submit" class="btn btn-dark text-white">Crear</button>
+                    <button type="button" class="btn btn-dark text-white" id="btnCreate" onclick="Crear()">Crear</button>
                 </div>
                 <!-- <div class="col-md-2 col-12">
                         <a href="{{route('login')}}" class="d-grid gap-2">
@@ -315,10 +317,10 @@
 
     function validar() {
         let documento = $("#Doc").val();
-        console.log(documento);
+        
         
         let incluye = ClientExist.includes(documento);
-        console.log( incluye );
+        
         if ( documento !== '' ) {
             if (incluye == true || documento == '') {
                 $("#mensaje").text('');
@@ -364,7 +366,7 @@
     function Mupio() {
         $('#ciudad').text('');
         let departamentoSelected = $('#depar option:selected').val();
-        console.log(departamentoSelected);
+        
 
         for (let municipio of departamentos) {
             if (departamentoSelected == municipio['U_NomDepartamento']) {
@@ -437,7 +439,7 @@
     function Mupio2() {
         $('#ciudad2').text('');
         let departamentoSelected2 = $('#depar2 option:selected').val();
-        console.log();
+        
         for (let municipio2 of departamentos) {
             if (departamentoSelected2 == municipio2['U_NomDepartamento']) {
                 $('#ciudad2').append(`
@@ -513,10 +515,44 @@
         let x = $('#barrio2').val();
         $('#barrio2').val(x.toUpperCase());
     }
+    
+    function Crear() {
+        let Dep = $("#depar").val();
+        let City = $("#ciudad").val();
+        let Barrio = $("#barrio").val();
+        let dir_f = $("#dire_fisica").val();
+        let Cod_p = $("#postal").val();
+        let no = $("#no_dire").val();
+        let si = $("#si_dire").val();
+        
 
+       if (Dep == '' || City == '' || Barrio == '' || dir_f == '' || Cod_p == '' || no == null || si == null) {
+
+        var posicion = $("#alert_cirecciones").offset().top;
+        console.log(posicion);
+        $("html, body").animate({
+            scrollTop: posicion-100
+        }, 500); 
+
+        $("#alert_cirecciones").html(`
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <b><i class="fas fa-exclamation-triangle"></i></b> Por favor, completar todos los campos de dirección.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `);
+       } else {
+        $("#FormCreate").submit();
+        $("#btnCreate").prop("disabled",true);
+        
+        $("#btnCreate").html(
+            `<span class="spinner-border spinner-border-sm"
+            role="status" aria-hidden="true"></span> Creando...`
+        ) ;
+       }
+    }
     // function Valid_email() {
     //     let correo = $('#correo_fac').val();
-    //     console.log(correo);
+    
 
     //     var myHeaders = new Headers();
     //     myHeaders.append("apikey", "l8Cq3sBkmZUgExqcXA7SzxS23h6eOJ24");
@@ -532,14 +568,14 @@
     //     .then(result => 
     //         {
     //             let resp = JSON.parse(result)
-    //             console.log(resp);
+    
     //             if (resp['smtp_check']) {
-    //                 console.log('si');
+        
     //                 $("#correo_fac").removeClass('is-invalid');
     //                 $("#correo_fac").addClass('is-valid');
     //                 $("#mensaje1").text('');
     //             }else{
-    //                 console.log('no');
+        
     //                 $("#mensaje1").text('');
     //                 $("#correo_fac").removeClass('is-valid');
     //                 $("#correo_fac").addClass('is-invalid');
@@ -566,12 +602,12 @@
     //         .then(response => response.text())
     //         .then(result => {
     //             if (result == 'ok') {
-    //                 console.log('si');
+        
     //                 $("#correo_fac").removeClass('is-invalid');
     //                 $("#correo_fac").addClass('is-valid');
     //                 $("#mensaje1").text('');
     //             }else{
-    //                 console.log('no');
+        
     //                 $("#mensaje1").text('');
     //                 $("#correo_fac").removeClass('is-valid');
     //                 $("#correo_fac").addClass('is-invalid');
@@ -588,7 +624,7 @@
     
     // function Valid_email2() {
     //     let correo = $('#correo_noti').val();
-    //     console.log(correo);
+    
         
         
     //     var myHeaders = new Headers();
@@ -604,12 +640,12 @@
     //         .then(response => response.text())
     //         .then(result => {
     //             if (result == 'ok') {
-    //                 console.log('si');
+        
     //                 $("#correo_noti").removeClass('is-invalid');
     //                 $("#correo_noti").addClass('is-valid');
     //                 $("#mensaje2").text('');
     //             }else{
-    //                 console.log('no');
+        
     //                 $("#mensaje2").text('');
     //                 $("#correo_noti").removeClass('is-valid');
     //                 $("#correo_noti").addClass('is-invalid');

@@ -46,7 +46,7 @@
                                 <img src="{{url('/')}}/img/logoIvanagro.png" width="100%" alt="Logo">
                             </div>
                         </div>
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('login') }}" id="form_login">
                             @csrf
 
                             <div class="row mb-3">
@@ -81,7 +81,7 @@
                             <div class="row mb-0 justify-content-center">
                                 <div class="col-md-8">
                                     <div class="d-grid gap-2">
-                                        <button class="btn btn-lg btn-primary" type="submit">
+                                        <button class="btn btn-lg btn-primary" id="btnCrear" type="button">
                                             {{ __('Login') }}
                                         </button>
                                     </div>
@@ -119,6 +119,24 @@
             let x = $('#usuario').val();
             $('#usuario').val(x.toUpperCase());
         }
+
+        $("#btnCrear").click(function () {
+            $("#form_login").submit();
+            $(this).prop("disabled",true);
+            
+            $(this).html(
+            `<span class="spinner-border spinner-border-sm"
+            role="status" aria-hidden="true"></span> Ingresando...`
+            ) ;
+        });
+        $(document).keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            console.log(keycode);
+            if(keycode == '13'){
+                $("#btnCrear").click();
+                // alert('You pressed a "enter" key in textbox');  
+            }
+        });
         
     </script>
     </body>

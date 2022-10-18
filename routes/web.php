@@ -29,14 +29,16 @@ Route::get('/', function () {
     // dd($_SESSION['B1SESSION']);  
     
 
-    // $datos = Http::get('https://mandaryservir.co/mys/users/remesasivanagro/2022-08-01')->json();
+    // $datos = Http::get('https://mandaryservir.co/mys/users/remesasivanagro/2022-09-15')->json();
     // $datos = $datos['Guia'];
-    //     dd($datos);
+    // dd($datos);
         
     return view('login');
 });
 
 Route::get('/logout', [SessionController::class, 'logout'])->name('logout');
 Route::post('/login', [SessionController::class, 'login'])->name('login');
+
+
 Route::get('/create', [ClienteControleler::class, 'create'])->name('create');
 Route::post('/store', [ClienteControleler::class, 'store'])->name('store');

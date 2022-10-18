@@ -300,7 +300,7 @@ class ClienteControleler extends Controller
                 }
                 
                 Alert::success('Creado', 'Cliente creado exitosamente.');
-                return redirect('/');
+                return redirect()->route('create');
             } catch (\Throwable $th) {
                 log($th->getMessage());
                 Alert::error('¡Sección Expirada!', 'Iniciar sección nuevamente.');

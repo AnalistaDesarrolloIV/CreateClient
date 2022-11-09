@@ -30,7 +30,7 @@
         </li>
       </ul>
       <form class="d-flex" role="search">
-        <a href="{{route('logout')}}"> <strong class="btn text-light">Cerrar session <i class="fas fa-sign-out-alt"></i> </strong></a>
+        <a href="{{route('logout')}}"> <strong class="btn text-light"> {{ __('Logout') }} <i class="fas fa-sign-out-alt"></i> </strong></a>
       </form>
     </div>
   </div>

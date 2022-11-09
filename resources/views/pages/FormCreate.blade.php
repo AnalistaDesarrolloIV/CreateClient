@@ -14,7 +14,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label for="tipo_doc" class="form-label"> <strong> Tipo documento <b style="color: red;">*</b> </strong></label>
-                        <select class="form-select form-select-lg select2  @error('TipoDocumento') is-invalid @enderror" id="tipo_doc" name="TipoDocumento" data-placeholder="Seleccionar" onchange="archivos()">
+                        <select class="form-select form-select-lg select2  @error('TipoDocumento') is-invalid @enderror" id="tipo_doc" name="TipoDocumento" data-placeholder="Seleccionar">
                             <option value=''>Seleccione</option>
                         </select>
                     </div>
@@ -34,7 +34,7 @@
                     <div class="alert alert-danger mt-1 mb-1"><small>{{ $message }}</small></div>
                     @enderror
                 </div>
-                <div class="col-12">
+                <div class="col-lg-6">
                     <div class="mb-3">
                         <label for="nane" class="form-label"><strong> Nombre completo <b style="color: red;">*</b> </strong></label>
                         <input type="text" class="form-control form-control-lg @error('Nombre') is-invalid @enderror" id="nane" name="Nombre" value="{{old('Nombre')}}" placeholder="Ejm. IVAN MONTES" onkeyup="mayusculas()">
@@ -52,10 +52,10 @@
                     <div class="alert alert-danger mt-1 mb-1"><small>{{ $message }}</small></div>
                     @enderror
                 </div>
-                <div class="col-8 col-lg-4">
+                <div class="col-md-6">
                     <div class="mb-3">
                         <label for="segmento" class="form-label"> <strong> Segmento <b style="color: red;">*</b> </strong></label>
-                        <select class="form-select form-select-lg select2 @error('Segmento') is-invalid @enderror" id="segmento" name="Segmento" data-placeholder="Seleccionar" onchange="dcto()">
+                        <select class="form-select form-select-lg select2 @error('Segmento') is-invalid @enderror" id="segmento" name="Segmento" data-placeholder="Seleccionar">
                             <option value=''>Seleccione</option>
                             <option value="Agropecuaria">Agropecuaria</option>
                             <option value="Aves - Engorde">Aves - Engorde</option>
@@ -80,12 +80,17 @@
                     <div class="alert alert-danger mt-1 mb-1"><small>{{ $message }}</small></div>
                     @enderror
                 </div>
-                <div class="col-4 col-lg-2">
+                <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="descuento" class="form-label"><strong> Dcto. </strong></label>
-                        <input type="number" class="form-control form-control-lg @error('Descuento') is-invalid @enderror" readonly id="descuento" name="Descuento" value="{{old('Descuento')}}" placeholder="">
+                        <label for="grupos" class="form-label"> <strong> Grupo <b style="color: red;">*</b> </strong></label>
+                        <select class="form-select form-select-lg select2 @error('grupos') is-invalid @enderror" id="grupo" name="grupos" data-placeholder="Seleccionar">
+                            <option value=''>Seleccione</option>
+                            @foreach($Getgrupos as $key => $valor)
+                                <option value='{{$valor['GroupCode']}}--{{$valor['GroupName']}}'>{{$valor['GroupName']}}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    @error('Descuento')
+                    @error('Segmento')
                     <div class="alert alert-danger mt-1 mb-1"><small>{{ $message }}</small></div>
                     @enderror
                 </div>
@@ -126,16 +131,17 @@
                     <div class="alert alert-danger mt-1 mb-1"><small>{{ $message }}</small></div>
                     @enderror
                 </div>
+
                 <div class="row">
                     <label for="" class="form-label"><b> IVA </b><b style="color: red;">*</b></label>
-                    <div class="col-12 mb-3 ml-2 rounded bg-light">
+                    <div class="col-12 mb-3 ml-5 rounded bg-light">
                         <p class="form-label"> <strong>Es responsable de Iva: </strong> </p>
                         <div class="form-check py-2">
-                            <input class="form-check-input" type="radio" name="Res_Iva" id="si" value="si" onclick="archivos2()">
+                            <input class="form-check-input" type="radio" name="Res_Iva" id="si" value="si" onclick="si_iva()">
                             <label class="form-check-label" for="si">Si</label>
                         </div>
                         <div class="form-check py-2">
-                            <input class="form-check-input" type="radio" name="Res_Iva" id="no" value="no" onclick="borrararch2()">
+                            <input class="form-check-input" type="radio" name="Res_Iva" id="no" value="no" onclick="no_iva()">
                             <label class="form-check-label" for="no">No</label>
                         </div>
                         @error('Res_Iva')
@@ -143,21 +149,40 @@
                         @enderror
                     </div>
                 </div>
-                <div class="col-12" id="archi">
-
+                <div class="row d-none" id="archi1">
+                    <div class="col-12">
+                        <label class="form-label" for="cc_nit"> <strong> Nit/Cedula Ciudadania </strong> </label>
+                        <div class="input-group input-group-lg mb-3">
+                            <input type="file" class="form-control" id="cc_nit" name="Documento_idetidad[]" accept=".pdf, .jpg, .png, .jpeg">
+                        </div>
+                    </div>
                 </div>
-                <div class="col-12" id="archi2">
-
+                <div class="row d-none" id="archi2">
+                    <div class="col-12">
+                        <label class="form-label" for="cc_nit"> <strong> Nit/Cedula Ciudadania </strong><b style="color: red;">*</b> </label>
+                        <div class="input-group input-group-lg mb-3">
+                            <input type="file" class="form-control" id="cc_nit" required name="Documento_idetidad[]" accept=".pdf, .jpg, .png, .jpeg">
+                        </div>
+                    </div>
                 </div>
+                <div class="row d-none" id="archi3">
+                    <div class="col-12">
+                        <label class="form-label" for="rut"> <strong> Rut</strong><b style="color: red;">*</b> </label>
+                        <div class="input-group input-group-lg mb-3">
+                            <input type="file" class="form-control" id="rut" required name="Documento_idetidad[]" accept=".pdf, .jpg, .png, .jpeg">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col"></div>
             </div>
             <hr>
             <div class="row">
                 <div class="col-12">
-                    <h3 class="text-center" style="font-size: 35px;"> <strong> Direcciones. </strong> </h3>
+                    <h2 class="text-center" style="font-size: 35px;"> <strong> Direcciones. </strong> </h2>
                 </div>
                 <div class="col-12">
-                    <h5 class="text-start"> <strong> envío. </strong> </h5>
+                    <h3 class="text-start"> <strong> Dirección de envío. </strong> </h3>
                 </div>
                 <hr>
                 <input type="hidden" name="Tipo_direccion[]" value="bo_ShipTo">
@@ -215,7 +240,7 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col-lg-6 mb-3 ml-2 rounded bg-light">
-                        <p class="form-label"> <strong> Desea utilizar esta dirección para facturación: </strong> <b style="color: red;">*</b></p>
+                        <p class="form-label"> <strong> ¿Desea utilizar esta dirección para facturación? </strong> <b style="color: red;">*</b></p>
                         <div class="form-check py-2">
                             <input class="form-check-input" type="radio" name="Doble_dire" id="si_dire" value="si" onclick="borar_direccion()">
                             <label class="form-check-label" for="si_dire">Si</label>
@@ -238,11 +263,6 @@
                 <div class="col-12 col-md-4 pb-3 pb-md-0 d-grid gap-2">
                     <button type="button" class="btn btn-dark text-white" id="btnCreate" onclick="Crear()">Crear</button>
                 </div>
-                <!-- <div class="col-md-2 col-12">
-                        <a href="{{route('login')}}" class="d-grid gap-2">
-                        <button type="button" class="btn btn-outline-dark">Volver</button>
-                        </a>
-                    </div> -->
             </div>
         </form>
     </div>
@@ -299,21 +319,16 @@
     });
 
     var tiposDocumento = '<?php echo json_encode($tipo_d) ?>';
-
     let tipos_d = JSON.parse(tiposDocumento);
-
     sortJSON(tipos_d, 'Name', 'asc');
 
     var depar = '<?php echo json_encode($departamento) ?>';
-
     let departamentos = JSON.parse(depar);
-
     sortJSON(departamentos, 'U_NomDepartamento', 'asc');
 
-    
     var client = '<?php echo json_encode($docClient) ?>';
-
     let ClientExist = JSON.parse(client);
+
 
     function validar() {
         let documento = $("#Doc").val();
@@ -386,7 +401,7 @@
                 <input type="hidden" name="Tipo_direccion[]" value="bo_BillTo">
                     <input type="hidden" name="Nombre_direccion[]" value="FACTURA">
                     <div class="col-12" style="border-bottom: solid 1px  #0000;">
-                        <h5 class="text-start"> <strong> Facturación. </strong> </h5>
+                        <h3 class="text-start"> <strong> Dirección de Facturación. </strong> </h3>
                     </div>
                     <hr>
                     <div class="col-6">
@@ -449,57 +464,71 @@
         }
     }
 
-    function archivos() {
-        let tipos = $("#tipo_doc option:selected").val();
-        if (tipos == 31) {
-            $("#archi").text('');
-            $("#archi2").text('');
-            $("#archi").append(`
-                        <label class="form-label" for="rut"> <strong> Rut* </strong> </label>
-                        <div class="input-group input-group-lg mb-3">
-                            <input type="file" class="form-control" id="rut" required name="Documento_idetidad[]">
-                        </div>
-                    `);
-        } else {
-            $("#archi2").text('');
-            $("#archi").text('');
-            $("#archi2").append(`
-                        <label class="form-label" for="cc_nit"> <strong> Nit/Cedula Ciudadania </strong> </label>
-                        <div class="input-group input-group-lg mb-3">
-                            <input type="file" class="form-control" id="cc_nit" name="Documento_idetidad[]">
-                        </div>
-                    `);
+    function si_iva()  {
+        let doc = $("#tipo_doc option:selected").val();
+        console.log("documento: "+doc);
+        if (doc == 31) {
+            $("#archi1").addClass('d-none');
+            $("#archi2").addClass('d-none');
+            $("#archi3").removeClass('d-none');
+        }else {
+            $("#archi1").addClass('d-none');
+            $("#archi3").addClass('d-none');
+            $("#archi2").removeClass('d-none');
+        }
+    } 
+    function no_iva()  {
+        let doc = $("#tipo_doc option:selected").val();
+        console.log("documento: "+doc);
+        
+        if (doc == 31) {
+            $("#archi1").addClass('d-none');
+            $("#archi2").addClass('d-none');
+            $("#archi3").removeClass('d-none');
+        }else {
+            $("#archi2").addClass('d-none');
+            $("#archi3").addClass('d-none');
+            $("#archi1").removeClass('d-none');
         }
     }
+    // function archivos() {
+    //     let tipos = $("#tipo_doc option:selected").val();
+    //     if (tipos == 31) {
+    //         $("#archi").text('');
+    //         $("#archi2").text('');
+    //         $("#archi").append(`
+    //                     <label class="form-label" for="rut"> <strong> Rut* </strong> </label>
+    //                     <div class="input-group input-group-lg mb-3">
+    //                         <input type="file" class="form-control" id="rut" required name="Documento_idetidad[]" accept=".pdf, .jpg, .png, .jpeg">
+    //                     </div>
+    //                 `);
+    //     } else {
+    //         $("#archi2").text('');
+    //         $("#archi").text('');
+    //         $("#archi2").append(`
+    //                     <label class="form-label" for="cc_nit"> <strong> Nit/Cedula Ciudadania </strong> </label>
+    //                     <div class="input-group input-group-lg mb-3">
+    //                         <input type="file" class="form-control" id="cc_nit" name="Documento_idetidad[]" accept=".pdf, .jpg, .png, .jpeg">
+    //                     </div>
+    //                 `);
+    //     }
+    // }
 
-    function dcto() {
-        let seg = $("#segmento option:selected").text();
-        if (seg == "Aves - Engorde" || seg == "Aves - Ponedoras" || seg == "Otros") {
-            $("#descuento").val(5);
-        } else if (seg == "Agropecuaria" || seg == "Clinica veterinaria" || seg == "Equinos - Criadero" || seg == "Equinos - Pesebrera" || seg == "Mascotas - Pet shop" || seg == "Veterinario a domicilio") {
-            $("#descuento").val(6);
-        } else if (seg == "Ganaderia - Carne" || seg == "Ganaderia - Doble proposito" || seg == "Ganaderia - Leche" || seg == "Porcicultura - Ceba" || seg == "Porcicultura - Ciclo completo" || seg == "Porcicultura - Cria" || seg == "Porcicultura - Levante") {
-            $("#descuento").val(8);
-        } else {
-            $("#descuento").val(0);
-        }
-    }
+    // function archivos2() {
+    //     $("#archi").text('');
+    //     $("#archi").append(`
+    //         <label class="form-label" for="rut"> <strong> Rut* </strong> </label>
+    //         <div class="input-group input-group-lg mb-3">
+    //             <input type="file" class="form-control" id="rut" required name="Documento_idetidad[]" accept=".pdf, .jpg, .png, .jpeg">
+    //         </div>
+    //     `);
+    // }
 
-    function archivos2() {
-        $("#archi").text('');
-        $("#archi").append(`
-                        <label class="form-label" for="rut"> <strong> Rut* </strong> </label>
-                        <div class="input-group input-group-lg mb-3">
-                            <input type="file" class="form-control" id="rut" required name="Documento_idetidad[]">
-                        </div>
-                    `);
-    }
-
-    function borrararch2() {
-        $("#archi label").text('');
-        $("#archi label").append(` <strong> Rut </strong> `);
-        $("#rut").removeAttr('required');
-    }
+    // function borrararch2() {
+    //     $("#archi label").text('');
+    //     $("#archi label").append(` <strong> Rut </strong> `);
+    //     $("#rut").removeAttr('required');
+    // }
 
     function mayusculas() {
         let x = $('#nane').val();
@@ -550,115 +579,6 @@
         ) ;
        }
     }
-    // function Valid_email() {
-    //     let correo = $('#correo_fac').val();
-    
-
-    //     var myHeaders = new Headers();
-    //     myHeaders.append("apikey", "l8Cq3sBkmZUgExqcXA7SzxS23h6eOJ24");
-
-    //     var requestOptions = {
-    //     method: 'GET',
-    //     redirect: 'follow',
-    //     headers: myHeaders
-    //     };
-
-    //     fetch("https://api.apilayer.com/email_verification/check?email="+correo, requestOptions)
-    //     .then(response => response.text())
-    //     .then(result => 
-    //         {
-    //             let resp = JSON.parse(result)
-    
-    //             if (resp['smtp_check']) {
-        
-    //                 $("#correo_fac").removeClass('is-invalid');
-    //                 $("#correo_fac").addClass('is-valid');
-    //                 $("#mensaje1").text('');
-    //             }else{
-        
-    //                 $("#mensaje1").text('');
-    //                 $("#correo_fac").removeClass('is-valid');
-    //                 $("#correo_fac").addClass('is-invalid');
-    //                 $("#mensaje1").append(`
-                    
-    //                 <div class="alert alert-danger" role="alert">
-    //                     Correo no valido
-    //                 </div>`)
-    //             }
-    //         }
-    //     )
-    //     .catch(error => console.log('error', error));
-        
-    //     var myHeaders = new Headers();
-    //         myHeaders.append("Cookie", "emaillistverify_res=6n9g3hjpj9rik75j5jgcs4ui11");
-
-    //         var requestOptions = {
-    //         method: 'GET',
-    //         headers: myHeaders,
-    //         redirect: 'follow'
-    //         };
-
-    //         fetch("https://app.verificaremails.com/api/verifyEmail?secret=VuKx3XigoPHddVrVFhFKb&email="+correo, requestOptions)
-    //         .then(response => response.text())
-    //         .then(result => {
-    //             if (result == 'ok') {
-        
-    //                 $("#correo_fac").removeClass('is-invalid');
-    //                 $("#correo_fac").addClass('is-valid');
-    //                 $("#mensaje1").text('');
-    //             }else{
-        
-    //                 $("#mensaje1").text('');
-    //                 $("#correo_fac").removeClass('is-valid');
-    //                 $("#correo_fac").addClass('is-invalid');
-    //                 $("#mensaje1").append(`
-                    
-    //                 <div class="alert alert-danger" role="alert">
-    //                     Correo no valido
-    //                 </div>`)
-    //             }
-    //         })
-    //         .catch(error => console.log('error', error));
-
-    // }
-    
-    // function Valid_email2() {
-    //     let correo = $('#correo_noti').val();
-    
-        
-        
-    //     var myHeaders = new Headers();
-    //         myHeaders.append("Cookie", "emaillistverify_res=6n9g3hjpj9rik75j5jgcs4ui11");
-
-    //         var requestOptions = {
-    //         method: 'GET',
-    //         headers: myHeaders,
-    //         redirect: 'follow'
-    //         };
-
-    //         fetch("https://app.verificaremails.com/api/verifyEmail?secret=VuKx3XigoPHddVrVFhFKb&email="+correo, requestOptions)
-    //         .then(response => response.text())
-    //         .then(result => {
-    //             if (result == 'ok') {
-        
-    //                 $("#correo_noti").removeClass('is-invalid');
-    //                 $("#correo_noti").addClass('is-valid');
-    //                 $("#mensaje2").text('');
-    //             }else{
-        
-    //                 $("#mensaje2").text('');
-    //                 $("#correo_noti").removeClass('is-valid');
-    //                 $("#correo_noti").addClass('is-invalid');
-    //                 $("#mensaje2").append(`
-                    
-    //                 <div class="alert alert-danger" role="alert">
-    //                     Correo no valido
-    //                 </div>`)
-    //             }
-    //         })
-    //         .catch(error => console.log('error', error));
-
-    // }
 </script>
 
 @endsection

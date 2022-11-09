@@ -4,36 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Alert;
 use App\Http\Requests\cliente;
 use Illuminate\Support\Facades\Storage;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ClienteControleler extends Controller
 {
     public function create()
     {
+        session_start();
         try {
-            session_start();
-            $tipo_d = Http::retry(20, 200)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('TipoDoc')/List")->json();
-            $tipo_d = $tipo_d['value'];
+            $tipo_d = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('TipoDoc')/List")['value'];
     
-            $departamento = Http::retry(20, 200)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('Municipios2')/List")->json();
-            $departamento = $departamento['value'];
+            $departamento = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('Municipios2')/List")['value'];
             
-            $codigo_postal = Http::retry(20, 200)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('CodigoPostales')/List")->json();
-            $codigo_postal = $codigo_postal['value'];
+            $codigo_postal = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('CodigoPostales')/List")['value'];
             
-            
-            $clienteGet =  Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/BusinessPartners?$select=FederalTaxID')->json();
-            $GetClient = $clienteGet['value'];
+            $clienteGet =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/BusinessPartners?$select=FederalTaxID')['value'];
+
+            $Getgrupos =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('IV_GRUPART')/List")['value'];
+            // dd($tipo_d);
             $docClient = [];
-            foreach ($GetClient as $key => $value) {
+            foreach ($clienteGet as $key => $value) {
                 $docClient[$key] = $value['FederalTaxID'];
             }
-            // dd($docClient);
             
-            return view('pages.FormCreate', compact('tipo_d', 'departamento', 'codigo_postal', 'docClient'));
+            return view('pages.FormCreate', compact('tipo_d', 'departamento', 'codigo_postal', 'docClient', 'Getgrupos'));
+
         } catch (\Throwable $th) {
+            session_destroy();
             Alert::error('¡Sección Expirada!', 'Iniciar sección nuevamente.');
             return redirect('/');
         }
@@ -42,69 +41,89 @@ class ClienteControleler extends Controller
     public function store(cliente $request)
     {
         
-        // ------------- Re-Login Base de Datos-------------------
-        $response = Http::retry(20 ,300)->post('https://10.170.20.95:50000/b1s/v1/Login',[
-            'CompanyDB' => 'INVERSIONES0804',
-            'UserName' => 'Prueba',
-            'Password' => '1234',
-        ])->json();
-    
-        // dd($response);
         session_start();
-        $_SESSION['B1SESSION'] = $response['SessionId'];
-
-        $ciudad = Http::retry(20, 200)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('Municipios2')/List")->json();
-        $ciudad = $ciudad['value'];
-        // dd($ciudad);
 
         $datos = $request->all();
         // dd($datos);
+        $param = explode("--", $datos['grupos']);
+
+        $groupID = $param[0];
+        $groupName = $param[1];
+
+        // ------------- Re-Login Base de Datos-------------------
+        $response = Http::retry(30 ,5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
+            'CompanyDB' => 'INVERSIONES',
+            'UserName' => 'Desarrollos',
+            'Password' => 'Asdf1234$',
+        ])->json();
+    
+        $_SESSION['B1SESSION'] = $response['SessionId'];
+
+        $ciudad = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('Municipios2')/List")['value'];
+
+        $grupos =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('IV_SEGMENTOVENTA')/List")['value'];
+        
+        $segmento = $datos['Segmento'].$groupName;
+
+        foreach ($grupos as $key => $dtos) {
+            if ($dtos['Code'] == $segmento) {
+                $seg = $dtos['Code'];
+                $descuento = $dtos['U_GSP_NAME'];
+            }
+        }
+
         $code = "CN".$datos['Documento'];
         
         $nombre = mb_strtoupper( $datos['Nombre'], 'UTF-8');
-        // dd($nombre);
-
 
         try {
-            $clienteGet =  Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/BusinessPartners('".$code."')")->json();
-            // dd($clienteGet);
+            $clienteGet =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/BusinessPartners('".$code."')")->json();
+            
             Alert::error('Error', 'Cliente ya existe');
             return redirect()->route('create');
+
         } catch (\Throwable $th) {
-            $decto = intval($datos['Descuento']);
+            $descuento = intval($descuento);
             try {
-                if (isset($datos['Documento_idetidad'])) {
+                if (isset($datos['Documento_idetidad'])) {                    
                     $archivos = $datos['Documento_idetidad'];
                     $id_doc = '';
                     foreach ($archivos as $key => $value) {
                         $arch = $value;
-                        $nombreDocumento =  time()."-".$code."-".$arch->getClientOriginalName(); 
-                        $gl = Storage::disk('public')->put("docs", $nombreDocumento);
-                        // $arch->storage(public_path().'/docs', $nombreArch);  
-                        $url=url('').'storage/docs';
-                        $g = move_uploaded_file($arch, "//10.170.20.124/SAP-compartida/Carpeta_anexos/$nombreDocumento");
+
+                        $nombreDocumento = "Cedula_o_RUT_".$code."_".date('Y-m-d H_i_s')."_";
+
+                        $nombreDocumento = str_replace('/', '_', $nombreDocumento);
+
+                        $url= "xampp/tmps";
+                        
+                        $directory = "//mnt/anexos/";
+
+                        $g = move_uploaded_file($arch, $directory. $nombreDocumento);	
+
                         if ($id_doc == '') {
-                            $doc = Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])
+                            $doc = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])
                             ->post('https://10.170.20.95:50000/b1s/v1/Attachments2', [
                                 'Attachments2_Lines'=> [[
                                         'FileName'=> $nombreDocumento,
-                                        'SourcePath'=>  "$url"
+                                        'SourcePath'=>  $url
                                     ]]
                             ]);
                             $document = $doc->json();
                             $id_doc = $document['AbsoluteEntry'];
                         }else {
                             $AttachmentEntry = $id_doc;
-                            $doc = Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])
+                            $doc = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])
                             ->patch('https://10.170.20.95:50000/b1s/v1/Attachments2'."($AttachmentEntry)", [
                                 'Attachments2_Lines'=> [[
                                     'FileName'=> $nombreDocumento,
-                                    'SourcePath'=> "$url"
+                                    'SourcePath'=> $url
                                     ]]
                             ]);
                             $id_doc = $AttachmentEntry;
                         }
                     }
+
                     
                     if ($datos['Doble_dire'] == "no") {
                         foreach ($ciudad as $key => $value) {
@@ -115,7 +134,7 @@ class ClienteControleler extends Controller
                                 $city2 = $value['Name'];
                             }
                         }
-                        $create = Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
+                        $create = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
                                 "CardCode"=>$code,//codigocliente colocar CN seguido de numero identificación
                                 "CardName"=>$nombre,//Nombre cliente
                                 "CardType"=>"L",//Siempre enviar "cLid"
@@ -128,9 +147,12 @@ class ClienteControleler extends Controller
                                 "U_HBT_MailRecep_FE"=>$datos['Facturacion'],//Correo electronico que coloque el cliente para notificaciones de factura electronica
                                 "FreeText"=>$datos['Comentarios'],//colocar los comentarios que requiere adicionar el cliente max 100 caracteres
                                 "PriceListNum"=>1,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
-                                "DiscountPercent"=>$decto,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
+                                "DiscountPercent"=>$descuento,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
                                 "SalesPersonCode"=>$_SESSION['USER'],//Colocar el mismo codigo de quien se logea
                                 "U_RB_Clasificacion1"=>$datos['Segmento'],//Se puede enviar el campo quemado desde el desarrollo
+                                "GroupCode"=> $groupID,
+                                "U_IV_Cobrador"=> $_SESSION['COBRA'],
+                                "UseShippedGoodsAccount"=> "tYES",
                                 "BPAddresses"=>[
                                     [  
                                         "AddressName"=>"ENVIO",//Nombre direccion factura Envio
@@ -150,7 +172,8 @@ class ClienteControleler extends Controller
                                         "City"=>$city2,//Ciudad igual seleccionado por el cliente de lista deplegable ServiceLayerSQL query "EccoMunicipios "Code"
                                         "County"=>$datos['Departamento'][1],//De la lista deplegable de ServiceLayerSQL query "EccoMunicipios el campo "U_NomDepartamento"
                                         "AddressType"=>"bo_BillTo",//Tipo dirección factura envío
-                                        "U_HBT_MunMed"=>$datos['Ciudad'][1]//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                        "U_HBT_MunMed"=>$datos['Ciudad'][1],//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                        "U_HBT_DirMM"=>"Y"
                                     ]
                                 ]
                             
@@ -161,7 +184,7 @@ class ClienteControleler extends Controller
                                 $city = $value['Name'];
                             }
                         }
-                        $create = Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
+                        $create = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
                             "CardCode"=>$code,//codigocliente colocar CN seguido de numero identificación
                             "CardName"=>$nombre,//Nombre cliente
                             "CardType"=>"L",//Siempre enviar "cLid"
@@ -174,9 +197,12 @@ class ClienteControleler extends Controller
                             "U_HBT_MailRecep_FE"=>$datos['Facturacion'],//Correo electronico que coloque el cliente para notificaciones de factura electronica
                             "FreeText"=>$datos['Comentarios'],//colocar los comentarios que requiere adicionar el cliente max 100 caracteres
                             "PriceListNum"=>1,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
-                            "DiscountPercent"=>$decto,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
+                            "DiscountPercent"=>$descuento,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
                             "SalesPersonCode"=>$_SESSION['USER'],//Colocar el mismo codigo de quien se logea
                             "U_RB_Clasificacion1"=>$datos['Segmento'],//Se puede enviar el campo quemado desde el desarrollo
+                            "GroupCode"=> $groupID,
+                            "U_IV_Cobrador"=> $_SESSION['COBRA'],
+                            "UseShippedGoodsAccount"=> "tYES",
                             "BPAddresses"=>[
                                 [  
                                     "AddressName"=>"ENVIO",//Nombre direccion factura Envio
@@ -196,7 +222,8 @@ class ClienteControleler extends Controller
                                     "City"=>$city,//Ciudad igual seleccionado por el cliente de lista deplegable ServiceLayerSQL query "EccoMunicipios "Code"
                                     "County"=>$datos['Departamento'][0],//De la lista deplegable de ServiceLayerSQL query "EccoMunicipios el campo "U_NomDepartamento"
                                     "AddressType"=>"bo_BillTo",//Tipo dirección factura envío
-                                    "U_HBT_MunMed"=>$datos['Ciudad'][0]//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                    "U_HBT_MunMed"=>$datos['Ciudad'][0],//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                    "U_HBT_DirMM"=>"Y"
                                 ]
                             ]
                         
@@ -212,7 +239,7 @@ class ClienteControleler extends Controller
                                 $city2 = $value['Name'];
                             }
                         }
-                        $create = Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
+                        $create = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
                                 "CardCode"=>$code,//codigocliente colocar CN seguido de numero identificación
                                 "CardName"=>$nombre,//Nombre cliente
                                 "CardType"=>"L",//Siempre enviar "cLid"
@@ -224,9 +251,12 @@ class ClienteControleler extends Controller
                                 "U_HBT_MailRecep_FE"=>$datos['Facturacion'],//Correo electronico que coloque el cliente para notificaciones de factura electronica
                                 "FreeText"=>$datos['Comentarios'],//colocar los comentarios que requiere adicionar el cliente max 100 caracteres
                                 "PriceListNum"=>1,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
-                                "DiscountPercent"=>$decto,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
+                                "DiscountPercent"=>$descuento,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
                                 "SalesPersonCode"=>$_SESSION['USER'],//Colocar el mismo codigo de quien se logea
                                 "U_RB_Clasificacion1"=>$datos['Segmento'],//Se puede enviar el campo quemado desde el desarrollo
+                                "GroupCode"=> $groupID,
+                                "U_IV_Cobrador"=> $_SESSION['COBRA'],
+                                "UseShippedGoodsAccount"=> "tYES",
                                 "BPAddresses"=>[
                                     [  
                                         "AddressName"=>"ENVIO",//Nombre direccion factura Envio
@@ -246,7 +276,8 @@ class ClienteControleler extends Controller
                                         "City"=>$city2,//Ciudad igual seleccionado por el cliente de lista deplegable ServiceLayerSQL query "EccoMunicipios "Code"
                                         "County"=>$datos['Departamento'][1],//De la lista deplegable de ServiceLayerSQL query "EccoMunicipios el campo "U_NomDepartamento"
                                         "AddressType"=>"bo_BillTo",//Tipo dirección factura envío
-                                        "U_HBT_MunMed"=>$datos['Ciudad'][1]//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                        "U_HBT_MunMed"=>$datos['Ciudad'][1],//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                        "U_HBT_DirMM"=>"Y"
                                     ]
                                 ]
                             
@@ -257,7 +288,7 @@ class ClienteControleler extends Controller
                                 $city = $value['Name'];
                             }
                         }
-                        $create = Http::retry(20, 300)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
+                        $create = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post('https://10.170.20.95:50000/b1s/v1/BusinessPartners', [
                             "CardCode"=>$code,//codigocliente colocar CN seguido de numero identificación
                             "CardName"=>$nombre,//Nombre cliente
                             "CardType"=>"L",//Siempre enviar "cLid"
@@ -269,9 +300,12 @@ class ClienteControleler extends Controller
                             "U_HBT_MailRecep_FE"=>$datos['Facturacion'],//Correo electronico que coloque el cliente para notificaciones de factura electronica
                             "FreeText"=>$datos['Comentarios'],//colocar los comentarios que requiere adicionar el cliente max 100 caracteres
                             "PriceListNum"=>1,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
-                            "DiscountPercent"=>$decto,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
+                            "DiscountPercent"=>$descuento,//Falta confirmaciòn de comercial para conocer lista de precios de acuerdo al cliente
                             "SalesPersonCode"=>$_SESSION['USER'],//Colocar el mismo codigo de quien se logea
                             "U_RB_Clasificacion1"=>$datos['Segmento'],//Se puede enviar el campo quemado desde el desarrollo
+                            "GroupCode"=> $groupID,
+                            "U_IV_Cobrador"=> $_SESSION['COBRA'],
+                            "UseShippedGoodsAccount"=> "tYES",
                             "BPAddresses"=>[
                                 [  
                                     "AddressName"=>"ENVIO",//Nombre direccion factura Envio
@@ -291,7 +325,8 @@ class ClienteControleler extends Controller
                                     "City"=>$city,//Ciudad igual seleccionado por el cliente de lista deplegable ServiceLayerSQL query "EccoMunicipios "Code"
                                     "County"=>$datos['Departamento'][0],//De la lista deplegable de ServiceLayerSQL query "EccoMunicipios el campo "U_NomDepartamento"
                                     "AddressType"=>"bo_BillTo",//Tipo dirección factura envío
-                                    "U_HBT_MunMed"=>$datos['Ciudad'][0]//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                    "U_HBT_MunMed"=>$datos['Ciudad'][0],//municipio o ciudad de acuerdo a lista desplegable ServiceLayerSQL query "EccoMunicipios" "Code"
+                                    "U_HBT_DirMM"=>"Y"
                                 ]
                             ]
                         
@@ -302,7 +337,7 @@ class ClienteControleler extends Controller
                 Alert::success('Creado', 'Cliente creado exitosamente.');
                 return redirect()->route('create');
             } catch (\Throwable $th) {
-                log($th->getMessage());
+                session_destroy();                
                 Alert::error('¡Sección Expirada!', 'Iniciar sección nuevamente.');
                 return redirect('/');
             }

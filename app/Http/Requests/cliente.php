@@ -29,7 +29,6 @@ class cliente extends FormRequest
             'Nombre' => 'required|min:3|max:50|regex:/^[\pL\s\-]+$/u',
             'Telefono' => 'required|min:10',
             'Segmento' => 'required',
-            'Descuento' => 'required|numeric',
             'Facturacion' => 'required|email',
             'Notificaciones' => 'required|email',
             'Comentarios' => 'max:100',
@@ -39,7 +38,8 @@ class cliente extends FormRequest
             "Barrio"=>"required",
             "Direccion"=>"required",
             "Codigo_postal"=>"required",
-            "Doble_dire"=>"required"
+            "Doble_dire"=>"required",
+            "grupos"=>"required"
         ];
     }
 

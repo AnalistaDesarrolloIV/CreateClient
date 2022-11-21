@@ -135,7 +135,7 @@
                 <div class="row">
                     <label for="" class="form-label"><b> IVA </b><b style="color: red;">*</b></label>
                     <div class="col-12 mb-3 ml-5 rounded bg-light">
-                        <p class="form-label"> <strong>Es responsable de Iva: </strong> </p>
+                        <p class="form-label"> <strong>¿Es responsable de IVA? </strong> </p>
                         <div class="form-check py-2">
                             <input class="form-check-input" type="radio" name="Res_Iva" id="si" value="si" onclick="si_iva()">
                             <label class="form-check-label" for="si">Si</label>

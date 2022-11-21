@@ -23,13 +23,15 @@ class ClienteControleler extends Controller
             $clienteGet =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/BusinessPartners?$select=FederalTaxID')['value'];
 
             $Getgrupos =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('IV_GRUPART')/List")['value'];
-            // dd($tipo_d);
+            
             $docClient = [];
             foreach ($clienteGet as $key => $value) {
                 $docClient[$key] = $value['FederalTaxID'];
             }
+
+            $usuario = $_SESSION['NAME_USER']; 
             
-            return view('pages.FormCreate', compact('tipo_d', 'departamento', 'codigo_postal', 'docClient', 'Getgrupos'));
+            return view('pages.FormCreate', compact('usuario', 'tipo_d', 'departamento', 'codigo_postal', 'docClient', 'Getgrupos'));
 
         } catch (\Throwable $th) {
             session_destroy();

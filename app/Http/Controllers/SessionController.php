@@ -28,13 +28,14 @@ class SessionController extends Controller
             $_SESSION['B1SESSION'] = $response['SessionId'];    
             // dd($response);
     
-            $users = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/EmployeesInfo?$select= ExternalEmployeeNumber,EmployeeCode,U_HBT_Contrasena,SalesPersonCode,U_GSP_Target')['value'];
+            $users = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/EmployeesInfo?$select= ExternalEmployeeNumber,EmployeeCode,U_HBT_Contrasena,SalesPersonCode,U_GSP_Target,FirstName,LastName')['value'];
 
             // dd($users);
 
             foreach ($users as $key => $value) {
                 if ($data['usuario'] == $value['EmployeeCode'] && $data['password'] == $value['U_HBT_Contrasena']) {
                     $_SESSION['USER'] = $value['SalesPersonCode'];
+                    $_SESSION['NAME_USER'] = $value['FirstName']." ".$value['LastName'];
                     $_SESSION['COBRA'] = $value['U_GSP_Target'];
                     $usuario = $_SESSION['COBRA'];
                   

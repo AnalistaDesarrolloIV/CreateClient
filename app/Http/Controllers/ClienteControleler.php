@@ -20,7 +20,7 @@ class ClienteControleler extends Controller
             
             $codigo_postal = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('CodigoPostales')/List")['value'];
             
-            $clienteGet =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/BusinessPartners?$select=FederalTaxID')['value'];
+            $clienteGet =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/BusinessPartners?$select=FederalTaxID&$filter=CardType eq'."'cCustomer'")['value'];
 
             $Getgrupos =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('IV_GRUPART')/List")['value'];
             
@@ -93,8 +93,8 @@ class ClienteControleler extends Controller
                     foreach ($archivos as $key => $value) {
                         $arch = $value;
 
-                        $nombreDocumento = "Cedula_o_RUT_".$code."_".date('Y-m-d H_i_s')."_";
-
+                        // $nombreDocumento = "Cedula_o_RUT_".$code."_".date('Y-m-d H_i_s')."_";
+                        $nombreDocumento = $code."_".$arch->getClientOriginalName();
                         $nombreDocumento = str_replace('/', '_', $nombreDocumento);
 
                         $url= "xampp/tmps";

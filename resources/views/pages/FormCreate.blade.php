@@ -45,7 +45,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label for="tel" class="form-label"><strong> Telefono/Celular <b style="color: red;">*</b> </strong></label>
+                        <label for="tel" class="form-label"><strong> Teléfono/Celular <b style="color: red;">*</b> </strong></label>
                         <input type="number" class="form-control form-control-lg @error('Telefono') is-invalid @enderror" id="tel" name="Telefono" value="{{old('Telefono')}}" placeholder="Ejm. 325698412">
                     </div>
                     @error('Telefono')
@@ -227,7 +227,7 @@
                         @enderror
                 </div>
                 <div class="col-lg-6 mb-3">
-                    <label for="postal" class="form-label"> <strong> Codigo postal </strong><b style="color: red;">*</b></label>
+                    <label for="postal" class="form-label"> <strong> Código  postal </strong><b style="color: red;">*</b></label>
                     <select class="form-select form-select-lg select2 @error('Codigo_postal') is-invalid @enderror" id="postal" name="Codigo_postal[]" data-placeholder="Seleccionar" required>
                         <option value="0">Seleccione</option>
                         @foreach ($codigo_postal as $key => $value)
@@ -370,9 +370,10 @@
 
     let dep = '';
     for (let depart of departamentos) {
+        console.log(depart);
         if (dep !== depart['U_NomDepartamento']) {
             $('#depar').append(`
-                    <option value="${depart['U_NomDepartamento']}">${depart['U_NomDepartamento'].toUpperCase()}</option>
+                    <option value="${depart['U_NomDepartamento']}">${depart['U_NomDepartamento']}</option>
                 `);
             dep = depart['U_NomDepartamento'];
         }

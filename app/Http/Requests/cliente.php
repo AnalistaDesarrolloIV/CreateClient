@@ -25,9 +25,9 @@ class cliente extends FormRequest
     {
         return [
             'TipoDocumento' => 'required',
-            'Documento' => 'required|numeric',
-            'Nombre' => 'required|min:3|max:50|regex:/^[\pL\s\-]+$/u',
-            'Telefono' => 'required|min:10',
+            'Documento' => 'required',
+            'Nombre' => 'required|min:3|max:50',
+            'Telefono' => 'required|min:6',
             'Segmento' => 'required',
             'Facturacion' => 'required|email',
             'Notificaciones' => 'required|email',
@@ -42,6 +42,8 @@ class cliente extends FormRequest
             "grupos"=>"required"
         ];
     }
+
+    // |regex:/^[\pL\s\-]+$/u
 
     public function attributes()
     {

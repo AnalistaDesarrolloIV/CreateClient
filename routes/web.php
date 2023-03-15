@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/log', function () {
+Route::get('/', function () {
     // $response = Http::retry(20 ,300)->post('https://10.170.20.95:50000/b1s/v1/Login',[
     //     'CompanyDB' => 'INVERSIONES0804',
     //     'UserName' => 'Prueba',

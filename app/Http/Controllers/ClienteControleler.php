@@ -59,6 +59,12 @@ class ClienteControleler extends Controller
             'Password' => 'Asdf1234$',
         ])->json();
     
+        // $response = Http::retry(30, 5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
+        //     'CompanyDB' => 'ZPRUREBANO',
+        //     'UserName' => 'Desarrollos',
+        //     'Password' => 'Asdf1234$',
+        // ])->json();
+
         $_SESSION['B1SESSION'] = $response['SessionId'];
 
         $ciudad = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('Municipios2')/List")['value'];
@@ -90,16 +96,22 @@ class ClienteControleler extends Controller
                 if (isset($datos['Documento_idetidad'])) {                    
                     $archivos = $datos['Documento_idetidad'];
                     $id_doc = '';
+                    $n_ciclo = 0;
                     foreach ($archivos as $key => $value) {
                         $arch = $value;
+                        // dd($n_ciclo);
 
                         // $nombreDocumento = "Cedula_o_RUT_".$code."_".date('Y-m-d H_i_s')."_";
-                        $nombreDocumento = $code."_".$arch->getClientOriginalName();
-                        $nombreDocumento = str_replace('/', '_', $nombreDocumento);
+                        // $nombreDocumento = $code."_".$arch->getClientOriginalName();
+                        $name_doc = $datos['NameDoc'][$n_ciclo]."-".$code;
+                        // dd($name_doc);
+                        $nombreDocumento = str_replace('/', '_', $name_doc);
 
                         $url= "xampp/tmps";
                         
-                        $directory = "//mnt/anexos/";
+                        // $directory = "//mnt/anexos/";
+                        $directory = "//10.170.20.124/SAP-compartida/Carpeta_anexos/";
+
 
                         $g = move_uploaded_file($arch, $directory. $nombreDocumento);	
 
@@ -124,6 +136,8 @@ class ClienteControleler extends Controller
                             ]);
                             $id_doc = $AttachmentEntry;
                         }
+                        
+                        $n_ciclo += 1; 
                     }
 
                     

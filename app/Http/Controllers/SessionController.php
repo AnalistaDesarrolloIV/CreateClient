@@ -48,6 +48,7 @@ class SessionController extends Controller
                     return redirect()->route('create');
                 }
             }
+            
             Alert::error('error', 'La información no coinside con con nuestros registros.');
             return view('login');
         } catch (\Throwable $th) {

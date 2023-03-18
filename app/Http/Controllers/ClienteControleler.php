@@ -67,11 +67,15 @@ class ClienteControleler extends Controller
 
         $_SESSION['B1SESSION'] = $response['SessionId'];
 
+        // dd($response['SessionId']);
+
         $ciudad = Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->post("https://10.170.20.95:50000/b1s/v1/SQLQueries('Municipios2')/List")['value'];
 
         $grupos =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('IV_SEGMENTOVENTA')/List")['value'];
         
         $segmento = $datos['Segmento'].$groupName;
+
+        // dd($segmento);
 
         foreach ($grupos as $key => $dtos) {
             if ($dtos['Code'] == $segmento) {
@@ -109,8 +113,8 @@ class ClienteControleler extends Controller
 
                         $url= "xampp/tmps";
                         
-                        // $directory = "//mnt/anexos/";
-                        $directory = "//10.170.20.124/SAP-compartida/Carpeta_anexos/";
+                        $directory = "//mnt/anexos/";
+                        // $directory = "//10.170.20.124/SAP-compartida/Carpeta_anexos/";
 
 
                         $g = move_uploaded_file($arch, $directory. $nombreDocumento);	

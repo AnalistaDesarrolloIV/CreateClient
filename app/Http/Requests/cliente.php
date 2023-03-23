@@ -26,7 +26,7 @@ class cliente extends FormRequest
         return [
             'TipoDocumento' => 'required',
             'Documento' => 'required',
-            'Nombre' => 'required|min:3|max:50',
+            'Nombre' => 'required|min:3|max:150',
             'Telefono' => 'required|min:6',
             'Segmento' => 'required',
             'Facturacion' => 'required|email',

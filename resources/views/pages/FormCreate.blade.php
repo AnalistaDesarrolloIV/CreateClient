@@ -78,6 +78,7 @@
                                 <option value="Equinos - Criadero">Equinos - Criadero</option>
                                 <option value="Equinos - Pesebrera">Equinos - Pesebrera</option>
                                 <option value="Ganaderia - Carne">Ganaderia - Carne</option>
+                                <option value="Ganaderia - Cría">Ganaderia - Cría</option>
                                 <option value="Ganaderia - Doble proposito">Ganaderia - Doble proposito</option>
                                 <option value="Ganaderia - Leche">Ganaderia - Leche</option>
                                 <option value="Mascotas - Animales de compañía">Mascotas - Animales de compañía</option>

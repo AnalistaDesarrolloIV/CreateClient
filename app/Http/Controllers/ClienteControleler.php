@@ -53,17 +53,17 @@ class ClienteControleler extends Controller
         $groupName = $param[1];
 
         // ------------- Re-Login Base de Datos-------------------
-        $response = Http::retry(30 ,5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
-            'CompanyDB' => 'INVERSIONES',
-            'UserName' => 'Desarrollos',
-            'Password' => 'Asdf1234$',
-        ])->json();
-    
-        // $response = Http::retry(30, 5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
-        //     'CompanyDB' => 'ZPRUREBANO',
+        // $response = Http::retry(30 ,5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
+        //     'CompanyDB' => 'INVERSIONES',
         //     'UserName' => 'Desarrollos',
         //     'Password' => 'Asdf1234$',
         // ])->json();
+    
+        $response = Http::retry(30, 5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
+            'CompanyDB' => 'ZPRUREBANO',
+            'UserName' => 'Desarrollos',
+            'Password' => 'Asdf1234$',
+        ])->json();
 
         $_SESSION['B1SESSION'] = $response['SessionId'];
 
@@ -113,8 +113,8 @@ class ClienteControleler extends Controller
 
                         $url= "xampp/tmps";
                         
-                        $directory = "//mnt/anexos/";
-                        // $directory = "//10.170.20.124/SAP-compartida/Carpeta_anexos/";
+                        // $directory = "//mnt/anexos/";
+                        $directory = "//10.170.20.124/SAP-compartida/Carpeta_anexos/";
 
 
                         $g = move_uploaded_file($arch, $directory. $nombreDocumento);	

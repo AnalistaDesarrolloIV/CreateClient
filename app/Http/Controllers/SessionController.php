@@ -18,17 +18,18 @@ class SessionController extends Controller
 
             // dd($data);
             // ------------- Login Base de Datos-------------------
-            // $response = Http::retry(30, 5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
-            //     'CompanyDB' => 'INVERSIONES',
-            //     'UserName' => 'Desarrollos',
-            //     'Password' => 'Asdf1234$',
-            // ])->json();
 
             $response = Http::retry(30, 5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
-                'CompanyDB' => 'ZPRUREBANO',
+                'CompanyDB' => 'INVERSIONES',
                 'UserName' => 'Desarrollos',
                 'Password' => 'Asdf1234$',
             ])->json();
+
+            // $response = Http::retry(30, 5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
+            //     'CompanyDB' => 'ZPRUREBANO',
+            //     'UserName' => 'Desarrollos',
+            //     'Password' => 'Asdf1234$',
+            // ])->json();
         
             session_start();
             $_SESSION['B1SESSION'] = $response['SessionId'];    

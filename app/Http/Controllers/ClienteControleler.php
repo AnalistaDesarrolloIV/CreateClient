@@ -53,6 +53,7 @@ class ClienteControleler extends Controller
         $groupName = $param[1];
 
         // ------------- Re-Login Base de Datos-------------------
+
         $response = Http::retry(30 ,5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
             'CompanyDB' => 'INVERSIONES',
             'UserName' => 'Desarrollos',

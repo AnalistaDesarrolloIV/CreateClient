@@ -18,6 +18,7 @@ class SessionController extends Controller
 
             // dd($data);
             // ------------- Login Base de Datos-------------------
+            
             $response = Http::retry(30, 5)->post('https://10.170.20.95:50000/b1s/v1/Login',[
                 'CompanyDB' => 'INVERSIONES',
                 'UserName' => 'Desarrollos',

@@ -3,7 +3,7 @@
 @section('tittle', 'Crear cliente')
 
 @section('content')
-    <div class="row justify-content-center mt-5">
+    <div class="row justify-content-center mt-5" id="cont">
         <div class=" col-12 col-lg-10 contenedor rounded p-4">
             <form action="{{ route('store') }}" method="post" enctype="multipart/form-data" id="FormCreate">
                 @csrf
@@ -813,8 +813,12 @@
 
                 $("#btnCreate").html(
                     `<span class="spinner-border spinner-border-sm"
-            role="status" aria-hidden="true"></span> Creando...`
+                    role="status" aria-hidden="true"></span> Creando...`
                 );
+                
+                $("#load").click();
+
+                $("#cont").html('');
             }
         }
     </script>

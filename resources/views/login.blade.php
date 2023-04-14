@@ -37,10 +37,28 @@
     </head>
     <body class="antialiased">
         <div class="container">
-            <div class="relative flex items-top justify-center min-h-screen sm:items-center py-4 sm:pt-0">
+            
+            <!-- Button trigger modal -->
+            <button type="button" id="load" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#loading">
+            
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="loading" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadingLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="">
+                        <div class="modal-body text-center">
+                            <img src="{{url('')}}/img/loading.gif" width="100%" height="100%" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative flex items-top justify-center min-h-screen sm:items-center py-4 sm:pt-0" id="cont">
 
                 <div class="row justify-content-center">
                     <div class="col-10 col-md-12 contenedor p-4 rounded">
+                        
+                        <!-- <video src="{{url('')}}/img/carga.mp4" autoplay loop muted height="100%" width="100%"></video> -->
                         <div class="row  justify-content-center">
                             <div class="col-8">
                                 <img src="{{url('/')}}/img/logoIvanagro.png" width="100%" alt="Logo">
@@ -128,6 +146,11 @@
             `<span class="spinner-border spinner-border-sm"
             role="status" aria-hidden="true"></span> Ingresando...`
             ) ;
+            
+            $("#load").click();
+
+            $("#cont").html('');
+
         });
         $(document).keypress(function(event){
             var keycode = (event.keyCode ? event.keyCode : event.which);

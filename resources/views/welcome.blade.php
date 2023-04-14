@@ -41,7 +41,22 @@
     </head>
     <body class="antialiased">
         <div class="container">
-            <div class="relative flex items-top justify-center min-h-screen sm:items-center py-4 sm:pt-0">
+                <!-- Button trigger modal -->
+                <button type="button" id="load" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#loading">
+                
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="loading" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadingLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="">
+                            <div class="modal-body text-center">
+                                <img src="{{url('')}}/img/loading.gif" width="100%" height="100%" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="relative flex items-top justify-center min-h-screen sm:items-center py-4 sm:pt-0" id="cont">
                 @extends('Layout.NavBar')
            
 

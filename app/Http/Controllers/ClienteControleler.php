@@ -77,7 +77,7 @@ class ClienteControleler extends Controller
         
         $segmento = $datos['Segmento'].$groupName;
 
-         dd($segmento);
+        // dd($segmento);
 
         foreach ($grupos as $key => $dtos) {
             if ($dtos['Code'] == $segmento) {
@@ -86,7 +86,7 @@ class ClienteControleler extends Controller
             }
         }
 
-        dd($descuento);
+        // dd($descuento);
 
         $code = "CN".$datos['Documento'];
         

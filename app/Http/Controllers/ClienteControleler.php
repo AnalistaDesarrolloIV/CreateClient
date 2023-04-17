@@ -85,9 +85,7 @@ class ClienteControleler extends Controller
                 $descuento = $dtos['U_GSP_NAME'];
             }
         }
-
-        // dd($descuento);
-
+        
         $code = "CN".$datos['Documento'];
         
         $nombre = mb_strtoupper( $datos['Nombre'], 'UTF-8');

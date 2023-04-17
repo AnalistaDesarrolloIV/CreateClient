@@ -23,7 +23,9 @@ class ClienteControleler extends Controller
             $clienteGet =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get('https://10.170.20.95:50000/b1s/v1/BusinessPartners?$select=FederalTaxID&$filter=CardType eq'."'cCustomer'")['value'];
 
             $Getgrupos =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/SQLQueries('IV_GRUPART')/List")['value'];
-            
+
+            $Getsegmentos =  Http::retry(30, 5)->withToken($_SESSION['B1SESSION'])->get("https://10.170.20.95:50000/b1s/v1/sml.svc/SEGMENTOS")['value'];
+            // dd($Getsegmentos);
             $docClient = [];
             foreach ($clienteGet as $key => $value) {
                 $docClient[$key] = $value['FederalTaxID'];
@@ -31,7 +33,7 @@ class ClienteControleler extends Controller
 
             $usuario = $_SESSION['NAME_USER']; 
             
-            return view('pages.FormCreate', compact('usuario', 'tipo_d', 'departamento', 'codigo_postal', 'docClient', 'Getgrupos'));
+            return view('pages.FormCreate', compact('usuario', 'tipo_d', 'departamento', 'codigo_postal', 'docClient', 'Getgrupos', 'Getsegmentos'));
 
         } catch (\Throwable $th) {
             session_destroy();
@@ -83,6 +85,8 @@ class ClienteControleler extends Controller
                 $descuento = $dtos['U_GSP_NAME'];
             }
         }
+
+        // dd($descuento);
 
         $code = "CN".$datos['Documento'];
         

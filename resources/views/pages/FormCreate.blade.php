@@ -71,24 +71,9 @@
                             <select class="form-select form-select-lg select2 @error('Segmento') is-invalid @enderror"
                                 id="segmento" name="Segmento" data-placeholder="Seleccionar">
                                 <option value=''>Seleccione</option>
-                                <option value="Agropecuaria">Agropecuaria</option>
-                                <option value="Aves - Engorde">Aves - Engorde</option>
-                                <option value="Aves - Ponedoras">Aves - Ponedoras</option>
-                                <option value="Clinica veterinaria">Clinica veterinaria</option>
-                                <option value="Equinos - Criadero">Equinos - Criadero</option>
-                                <option value="Equinos - Pesebrera">Equinos - Pesebrera</option>
-                                <option value="Ganaderia - Carne">Ganaderia - Carne</option>
-                                <option value="Ganaderia - Cría">Ganaderia - Cría</option>
-                                <option value="Ganaderia - Doble proposito">Ganaderia - Doble proposito</option>
-                                <option value="Ganaderia - Leche">Ganaderia - Leche</option>
-                                <option value="Mascotas - Animales de compañía">Mascotas - Animales de compañía</option>
-                                <option value="Mascotas - Pet shop">Mascotas - Pet shop</option>
-                                <option value="Porcicultura - Ceba">Porcicultura - Ceba</option>
-                                <option value="Porcicultura - Ciclo completo">Porcicultura - Ciclo completo</option>
-                                <option value="Porcicultura - Cria">Porcicultura - Cria</option>
-                                <option value="Porcicultura - Levante">Porcicultura - Levante</option>
-                                <option value="Veterinario a domicilio">Veterinario a domicilio</option>
-                                <option value="Otros">Otros</option>
+                                @foreach ($Getsegmentos as $key => $seg)
+                                    <option value="{{$seg['SEGMENTO']}}">{{$seg['SEGMENTO']}}</option>
+                                @endforeach
                             </select>
                         </div>
                         @error('Segmento')
